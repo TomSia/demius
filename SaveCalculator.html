@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #query {
+                float: left;
+            }
+
+            #query button{
+                padding: 5px;
+                margin-right: 20px;
+            }
+
+            #weekly {
+                float: right;
+                padding-left: 100px;
+            }
+
+            #weekly button {
+                padding: 5px;
+            }
+
+            #tax {
+                display: none;
+            }
+
+            #taxx {
+                display: none;
+            }
+
+            button {
+                background-color: white;
+            }
+                
+            
+
+        </style>
+    </head>
+    <body onload="reset()">
+        <div id="saveContainer">
+            <div id="query">
+                <div id = earnings>
+                    <h4>1. How much do you make?</h4><br>
+                    <div id="hourly">
+                    <h5>Hourly earnings</h5>
+                    <input type="number" id="hr" oninput="calculateWeek()">
+                    <h5><br>Hours worked per week</h5>
+                    <input type="number" id="whr" oninput="calculateWeek()"><br>
+                    <br><button onclick="store()"><h7>ADD</h7></button>
+                    <button onclick="reset()"><h7>RESET</h7></button>
+                    <label id="beforetax"><br>After Tax?</label>
+                    <input id="myCheck" type="checkbox" onclick="tick(), calculateWeek()"> 
+                    <h5 id="taxx"><br>Tax Percentage</h5>
+                    <input type="number" id="tax" oninput="calculateWeek()"><br>
+                    <h5><br>Other Deductions etc. KiwiSaver</h5>
+                    <input type="number" id="deductions" oninput="calculateWeek()"><br>
+                    </div>
+                    
+                </div>
+                <h4><br>2. How much do you spend?</h4><br>
+                <div id="spending">
+                    <h5>Rent per week</h5>
+                    <input type="number" id="rent" oninput="calculateWeek()">
+                    <h5><br>Bills</h5>
+                    <input type="number" id="bills" oninput="calculateWeek()">
+                    <h5><br>Food</h5>
+                    <input type="number" id="food" oninput="calculateWeek()">
+                </div>
+                <div id="testrunning">
+                    <span id="hrr"></span>
+                    <span id="whr"></span>
+                </div>
+
+            </div>
+            <div id="weekly">
+                <h5>WEEKLY BREAKDOWN</h5>
+                <h7>EARNINGS PER WEEK (Before Tax): $<span id="comb"></span></h7><br>
+                <h7>NET EARNINGS PER WEEK (After Tax): $<span id="earned"></span></h7><br>
+                <h7>SPENDING PER WEEK: $<span id="spent"></span></h7><br>
+                <h7>WEEKLY AMOUNT OF MONEY LEFT: $<span id="sum"></span></h7><br>
+                <h4><br>3. How much do you want to save?</h4><br>
+                <h5>Percentage you want to save?</h5>
+                <input type="number" id="save" oninput="calculateWeek()"><br>
+                <h7><br>AMOUNT SAVING: $<span id="amountsave"></span></h7><br>
+                <h7>AMOUNT LEFT TO SPEND: $<span id="leftover"></span></h7><br>
+
+                <br><button onclick="saving()"><h7>SAVE</h7></button>
+            </div>
+            
+            
+        </div>
+    </body>
+    <script>
+        const hour = document.getElementById("hr")
+        const work = document.getElementById("whr")
+        const tax = document.getElementById("tax")
+        const rent = document.getElementById("rent")
+        const bills = document.getElementById("bills")
+        const food = document.getElementById("food")
+        const save = document.getElementById("save")
+        const dede = document.getElementById("deductions")
+
+        function calculateWeek() {
+            let hr = hour.value;
+            let wk = work.value;
+            let comb = Number(hr*wk);
+            let ahh = window.localStorage.getItem("act")
+            let dd = Number(dede.value);
+            let rt = Number(rent.value)
+            let bl = Number(bills.value)
+            let fd = Number(food.value)
+            let tx = Number(tax.value)
+            let en = ((ahh)-((ahh*(tx+dd))/100));
+            let sp = rt + bl+ fd;
+            let sv = save.value;
+            let sum = (en-sp);
+            let svs = ((sum*sv)/100).toFixed(2);
+            let svm = (sum-svs).toFixed(2);
+            let svsper = Math.round((svs/en)*360);
+            let svmper = Math.round((svm/en)*360);
+            let saveper = Math.round((svs/en)*100);
+            let spendper = Math.round((svm/en)*100);
+            let esseper = Math.round(100-(saveper + spendper));
+            document.getElementById("comb").innerHTML = (ahh);
+            document.getElementById("earned").innerHTML = (en);
+            document.getElementById("spent").innerHTML = (sp);
+            document.getElementById("sum").innerHTML = (sum);
+            document.getElementById("amountsave").innerHTML = (svs);
+            document.getElementById("leftover").innerHTML = (svm);
+            window.localStorage.setItem("both", comb)
+            window.localStorage.setItem("savings",svs);
+            window.localStorage.setItem("spending",svm);
+            window.localStorage.setItem("savingsper",svsper);
+            window.localStorage.setItem("spendingper",svmper);
+        }
+
+        function saving() {
+            let svmper = window.localStorage.getItem("spendingper");
+            let svsper = window.localStorage.getItem("savingsper");
+            let svm = window.localStorage.getItem("spending");
+            let svs = window.localStorage.getItem("savings");
+            alert("This is the amount your spending $" + svm + " and the amount your saving $" + svs) ;
+
+        }
+
+
+        function tick() {
+        // Get the checkbox
+        var checkBox = document.getElementById("myCheck")
+        if (checkBox.checked == true){
+            document.getElementById("tax").value = 17.5;
+            document.getElementById("tax").style.display = "block";
+            document.getElementById("taxx").style.display = "block";
+        }
+        else {
+            document.getElementById("tax").value = 0;
+            document.getElementById("tax").style.display = "none";
+            document.getElementById("taxx").style.display = "none";
+        }
+        }
+
+        sum = 0;
+        test = [];
+        i = 0;
+        function store(){
+            var comb = window.localStorage.getItem("both");
+            test.splice(0, 0, comb)
+            sum += Number(test[0]) 
+            console.log(sum)
+            console.log(test)
+            i++
+            window.localStorage.setItem("act", sum)
+            calculateWeek()
+        }
+
+        function reset(){
+            document.getElementById("hr").value = 0;
+            document.getElementById("whr").value = 0;
+            document.getElementById("comb").innerHTML=0;
+            sum = 0;
+            test = [];
+            i = 0;
+            window.localStorage.setItem("act", sum)
+            calculateWeek()
+        }
+
+        
+
+    </script>
+</html>

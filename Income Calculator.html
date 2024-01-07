@@ -1,0 +1,208 @@
+<style>
+    #how {
+        float: left;
+        margin-right: 20px;
+    }
+    #income {
+        float: left;
+        margin-right: 20px;
+    }
+
+    #hours {
+        float: left;
+        margin-right: 20px;
+    }
+
+    #salary {
+        float: left;
+        margin-right: 20px;
+        display: none;    
+    }
+
+    #perwhat {
+        float: left;
+        margin-right: 20px;
+        display: none;
+    }
+
+    #submit {
+        float: left;
+    }
+
+    h5 {
+        padding-left: 10px;
+        margin-bottom: 0;
+    }
+
+    input {
+      font-size: 16px;
+        border: none;
+        background-color: rgba(128, 128, 128, 0.205);
+        padding-left: 25px;
+        border-radius: 25px;
+        height: 50px;
+        width: 180px;
+        padding-right: 15px;
+    }
+
+    select {
+      font-size: 16px;
+        background-color: rgba(128, 128, 128, 0.205);
+        border: none;
+        border-radius: 25px;
+        height: 50px;
+        width: 150px;
+        padding-left: 25px;
+        padding-right: 15px;
+        padding-bottom: 3px;
+
+        appearance: none;
+
+        background-image:
+            linear-gradient(45deg, transparent 50%, gray 50%),
+            linear-gradient(135deg, gray 50%, transparent 50%);
+        background-position:
+            calc(100% - 20px) calc(1.2em + 2px),
+            calc(100% - 15px) calc(1.2em + 2px);
+        background-size:
+            5px 5px,
+            5px 5px,
+            1px 1.5em;
+        background-repeat: no-repeat;
+    }
+
+    button {  
+        background-color: orange;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        height: 50px;
+        width: 150px;
+        font-weight: 700;
+        font-size: 15px;
+        margin-right: 20px;
+    }
+</style>
+<body onload = "fml()">
+    <div id="hourly">
+        <div id="how">
+            <h5>Pay</h5>
+            <select id="whow" oninput="fml()">
+                <option value="Wage">Wage</option>
+                <option value="Salary">Salary</option>
+            </select>
+        </div>
+        <div id="income">
+            <h5>Earnings per hour</h5>
+            <input type="number" id="hr" value="22.50" oninput="calculateWeek()">
+        </div>
+
+        <div id="hours">
+            <h5>Hours worked</h5>
+            <input type="number" id="whr" value="40" oninput="calculateWeek() ">
+        </div>
+
+        <div id="salary">
+            <h5>Gross income</h5>
+            <input type="number" id="saw" value="800">
+        </div>
+        
+        <div id="perwhat">
+            <h5>How Often</h5>
+            <select id="often" name="when">
+                <option value="wk">Weekly</option>
+                <option value="fn">Fortnightly</option>
+                <option value="mnt">Monthly</option>
+                <option value="anl">Annually</option>
+            </select>
+        </div>
+        <div id="submit">
+            <h5>&nbsp</h5>
+            <button onclick="store(),salaryWeek()">ADD</button>
+            <button onclick="reset()">RESET</button>
+        </div>
+    </div>
+</body>
+
+<script>
+    
+    const earn = document.getElementById("hr")
+    const work = document.getElementById("whr")
+
+    function fml() {
+        var wow = document.getElementById("whow").value
+        if (wow == "Salary") {
+            console.log("salary")
+            document.getElementById("income").style.display = "none";
+            document.getElementById("hours").style.display = "none";
+            document.getElementById("perwhat").style.display = "block";
+            document.getElementById("salary").style.display = "block";
+            earn.value = 0;
+            window.localStorage.setItem("both", 0)
+        }   else {
+            console.log("wage")
+            document.getElementById("income").style.display = "block";
+            document.getElementById("hours").style.display = "block";
+            document.getElementById("perwhat").style.display = "none";
+            document.getElementById("salary").style.display = "none";
+            document.getElementById("saw").value = 0; 
+        }
+    }
+    function calculateWeek(){
+        let en = earn.value;
+        let wk = work.value;
+        let comb = (en*wk);
+
+        window.localStorage.setItem("both", comb)
+        console.log(sum)
+    }
+
+    function salaryWeek() {
+        let sal = document.getElementById("saw").value;
+        let ot = document.getElementById("often").value;
+        console.log(sal)
+        console.log(ot)
+        if (ot == "wk") {
+            sum += Number(sal)
+        } else if (ot == "fn") {
+            sum += Number(sal/2)
+        } else if (ot == "mnt") {
+            sum += Number(sal/4)
+        } else if (ot == "anl") {
+            sum += Number(sal/48)
+        }
+        console.log(sum)
+        document.getElementById("finally").innerHTML= sum.toFixed(2)
+    }
+
+
+    sum = 0;
+    final = sum.toFixed(2);
+    test = [];
+    i = 0;
+    function store(){
+        var comb = window.localStorage.getItem("both");
+        test.splice(0, 0, comb)
+        sum += Number(test[0]) 
+        console.log(test)
+        i++
+        window.localStorage.setItem("act", final)
+        calculateWeek()
+        console.log(sum)
+        document.getElementById("finally").innerHTML= sum.toFixed(2)
+    }
+
+    function reset(){
+        document.getElementById("hr").value = 0;
+        document.getElementById("whr").value = 0;
+        document.getElementById("saw").value = 50000;
+        sum = 0;
+        test = [];
+        i = 0;
+        window.localStorage.setItem("act", sum)
+        calculateWeek()
+        console.log(sum)
+        document.getElementById("finally").innerHTML= sum.toFixed(2)
+    }
+
+</script>
